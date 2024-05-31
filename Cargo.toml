@@ -1,8 +1,11 @@
+workspace = { members = ["lizzard"] }
 [package]
 name = "lizzardjs"
 version = "0.1.0"
+author = ["mustafa 'pxsty' kok <pxsty@pxserv.net>"]
 edition = "2021"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
+v8 = "0.92.0"
