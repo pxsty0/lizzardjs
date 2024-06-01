@@ -2,6 +2,7 @@ mod functions;
 
 use functions::console;
 use functions::process;
+use functions::require;
 
 use std::{env, fs, path::Path};
 fn main() {
@@ -28,6 +29,7 @@ fn main() {
 
         console::init_console(scope, global);
         process::init_process(scope, global);
+        require::init_require(scope, global);
 
         let name = v8::String::new(scope, &args[1].to_string()).unwrap();
         let undefined = v8::undefined(scope);
@@ -60,12 +62,9 @@ fn main() {
                 }
             }
             None => {
-                let exception = try_catch.exception().unwrap();
-                let exception_string = exception.to_string(try_catch).unwrap();
-                println!(
-                    "CompletionError: {}",
-                    exception_string.to_rust_string_lossy(try_catch)
-                );
+                let stack_trace = try_catch.stack_trace().unwrap();
+                let stack_trace_string = stack_trace.to_string(try_catch).unwrap();
+                println!("{}", stack_trace_string.to_rust_string_lossy(try_catch));
             }
         }
     }
