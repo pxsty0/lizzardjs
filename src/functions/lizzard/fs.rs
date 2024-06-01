@@ -11,16 +11,16 @@ pub fn init_fs(scope: &mut ContextScope<HandleScope>, lizzard: v8::Local<v8::Obj
         fs_exists.into(),
     );
 
-    let fs_read = v8::FunctionTemplate::new(scope, read_cb);
+    let fs_read_file = v8::FunctionTemplate::new(scope, read_file_cb);
     fs.set(
-        v8::String::new(scope, "read").unwrap().into(),
-        fs_read.into(),
+        v8::String::new(scope, "readFile").unwrap().into(),
+        fs_read_file.into(),
     );
 
-    let fs_write = v8::FunctionTemplate::new(scope, write_cb);
+    let fs_write_file = v8::FunctionTemplate::new(scope, write_file_cb);
     fs.set(
-        v8::String::new(scope, "write").unwrap().into(),
-        fs_write.into(),
+        v8::String::new(scope, "writeFile").unwrap().into(),
+        fs_write_file.into(),
     );
 
     let fs_key = v8::String::new(scope, "fs").unwrap();
@@ -52,7 +52,7 @@ fn exists_cb(
     rv.set_bool(exists);
 }
 
-fn read_cb(
+fn read_file_cb(
     scope: &mut v8::HandleScope,
     args: v8::FunctionCallbackArguments,
     mut rv: v8::ReturnValue,
@@ -84,7 +84,7 @@ fn read_cb(
     }
 }
 
-fn write_cb(
+fn write_file_cb(
     scope: &mut v8::HandleScope,
     args: v8::FunctionCallbackArguments,
     mut rv: v8::ReturnValue,
