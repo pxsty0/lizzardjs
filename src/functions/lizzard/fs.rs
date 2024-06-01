@@ -68,9 +68,20 @@ fn read_cb(
         scope.throw_exception(exception);
         return;
     }
-    let reading_data = fs::read_to_string(&file_path).unwrap();
+    let status = fs::read_to_string(&file_path);
 
-    rv.set(v8::String::new(scope, &reading_data).unwrap().into());
+    match status {
+        Ok(reading_data) => {
+            println!("Dosya başarıyla okundu");
+            rv.set(v8::String::new(scope, &reading_data).unwrap().into());
+        }
+        Err(e) => {
+            let err_msg = v8::String::new(scope, &e.to_string()).unwrap().into();
+            let exception = v8::Exception::error(scope, err_msg);
+            scope.throw_exception(exception);
+            return;
+        }
+    }
 }
 
 fn write_cb(
@@ -101,6 +112,7 @@ fn write_cb(
         let err_msg = v8::String::new(scope, &e.to_string()).unwrap().into();
         let exception = v8::Exception::error(scope, err_msg);
         scope.throw_exception(exception);
+        return;
     } else {
         rv.set_bool(true);
     }
