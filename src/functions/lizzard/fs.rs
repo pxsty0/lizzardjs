@@ -17,6 +17,12 @@ pub fn init_fs(scope: &mut ContextScope<HandleScope>, lizzard: v8::Local<v8::Obj
         fs_read.into(),
     );
 
+    let fs_write = v8::FunctionTemplate::new(scope, write_cb);
+    fs.set(
+        v8::String::new(scope, "write").unwrap().into(),
+        fs_write.into(),
+    );
+
     let fs_key = v8::String::new(scope, "fs").unwrap();
     let fs_obj = fs.new_instance(scope).unwrap();
 
@@ -65,4 +71,37 @@ fn read_cb(
     let reading_data = fs::read_to_string(&file_path).unwrap();
 
     rv.set(v8::String::new(scope, &reading_data).unwrap().into());
+}
+
+fn write_cb(
+    scope: &mut v8::HandleScope,
+    args: v8::FunctionCallbackArguments,
+    mut rv: v8::ReturnValue,
+) {
+    if args.length() < 2 {
+        let err_msg = v8::String::new(scope, "missing parameters").unwrap().into();
+        let exception = v8::Exception::reference_error(scope, err_msg);
+        scope.throw_exception(exception);
+        return;
+    }
+    let path = args
+        .get(0)
+        .to_string(scope)
+        .unwrap()
+        .to_rust_string_lossy(scope);
+    let content = args
+        .get(1)
+        .to_string(scope)
+        .unwrap()
+        .to_rust_string_lossy(scope);
+
+    let status = fs::write(path, content);
+
+    if let Err(e) = status {
+        let err_msg = v8::String::new(scope, &e.to_string()).unwrap().into();
+        let exception = v8::Exception::error(scope, err_msg);
+        scope.throw_exception(exception);
+    } else {
+        rv.set_bool(true);
+    }
 }
