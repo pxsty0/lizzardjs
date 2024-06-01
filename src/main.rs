@@ -1,6 +1,7 @@
 mod functions;
 
 use functions::console;
+use functions::process;
 
 use std::{env, fs, path::Path};
 fn main() {
@@ -26,6 +27,7 @@ fn main() {
         let global = context.global(scope);
 
         console::init_console(scope, global);
+        process::init_process(scope, global);
 
         let name = v8::String::new(scope, &args[1].to_string()).unwrap();
         let undefined = v8::undefined(scope);
