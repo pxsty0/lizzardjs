@@ -23,7 +23,12 @@ fn require_callback(
         .to_rust_string_lossy(scope);
 
     if args.length() == 0 || Path::new(file_path).exists() == false {
-        panic!("lizzard Error : invalid require file path");
+        let err_msg = v8::String::new(scope, "invalid require file path")
+            .unwrap()
+            .into();
+        let exception = v8::Exception::reference_error(scope, err_msg);
+        scope.throw_exception(exception);
+        return;
     }
 
     let file_data = fs::read_to_string(file_path).unwrap();
@@ -45,12 +50,18 @@ fn require_callback(
         false,
     );
 
-    let script = v8::Script::compile(scope, v8_string, Some(&origin))
-        .expect(&format!("{} Unidentified Error Occurred", file_path));
+    let script = v8::Script::compile(scope, v8_string, Some(&origin)).expect(&format!(
+        "{} Unidentified Error Occurred (possible syntax error)",
+        file_path
+    ));
     let result = script.run(scope).unwrap();
 
     if result.is_function() == false {
-        panic!("{} contains no function", file_path);
+        let err_msg = v8::String::new(scope, &format!("{} contains no function", file_path))
+            .unwrap()
+            .into();
+        let exception = v8::Exception::reference_error(scope, err_msg);
+        scope.throw_exception(exception);
     }
 
     rv.set(result);

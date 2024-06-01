@@ -1,4 +1,4 @@
-use std::path::{self, Path};
+use std::path::Path;
 
 use v8::{self, ContextScope, HandleScope};
 
