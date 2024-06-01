@@ -11,6 +11,7 @@ JavaScript runtimer built with Rust
   
 ## Usage and Example
 
+--> index.js
 ```javascript
 console.log("developed by mustafa 'pxsty' kok");
 
@@ -18,16 +19,6 @@ console.time();
 console.timeEnd();
 
 require("./printInfo.js")();
-/* printInfo.js
-() => {
-  let device = process.os;
-
-  console.log(`işletim sistemi: ${device.type()}`);
-  console.log(`işletim sistemi versiyonu: ${device.version()}`);
-  console.log(`işletim sistemi bit : ${device.bitness()}`);
-};
-
- */
 const filePath = `C:/`;
 
 console.log(lizzard.fs.exists(filePath));
@@ -36,5 +27,13 @@ console.log(lizzard.fs.readFile("./mustafa.txt"));
 
 
 ```
+--> printInfo.js
+```javascript
+() => {
+  let device = process.os;
 
-  
+  console.log(`işletim sistemi: ${device.type()}`);
+  console.log(`işletim sistemi versiyonu: ${device.version()}`);
+  console.log(`işletim sistemi bit : ${device.bitness()}`);
+};
+```
