@@ -45,7 +45,8 @@ fn require_callback(
         false,
     );
 
-    let script = v8::Script::compile(scope, v8_string, Some(&origin)).expect("err oldu");
+    let script = v8::Script::compile(scope, v8_string, Some(&origin))
+        .expect(&format!("{} Unidentified Error Occurred", file_path));
     let result = script.run(scope).unwrap();
 
     if result.is_function() == false {
