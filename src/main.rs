@@ -1,6 +1,7 @@
 mod functions;
 
 use functions::console;
+use functions::lizzard;
 use functions::process;
 use functions::require;
 
@@ -30,6 +31,7 @@ fn main() {
         console::init_console(scope, global);
         process::init_process(scope, global);
         require::init_require(scope, global);
+        lizzard::init_lizzard(scope, global);
 
         let name = v8::String::new(scope, &args[1].to_string()).unwrap();
         let undefined = v8::undefined(scope);
