@@ -1,4 +1,4 @@
-use std::path::Path;
+use std::{fs, path::Path};
 
 use v8::{self, ContextScope, HandleScope};
 
@@ -47,8 +47,22 @@ fn exists_cb(
 }
 
 fn read_cb(
-    _scope: &mut v8::HandleScope,
-    _args: v8::FunctionCallbackArguments,
-    _rv: v8::ReturnValue,
+    scope: &mut v8::HandleScope,
+    args: v8::FunctionCallbackArguments,
+    mut rv: v8::ReturnValue,
 ) {
+    let file_path = args
+        .get(0)
+        .to_string(scope)
+        .unwrap()
+        .to_rust_string_lossy(scope);
+    if args.length() == 0 || Path::new(&file_path).exists() == false {
+        let err_msg = v8::String::new(scope, "invalid file path").unwrap().into();
+        let exception = v8::Exception::reference_error(scope, err_msg);
+        scope.throw_exception(exception);
+        return;
+    }
+    let reading_data = fs::read_to_string(&file_path).unwrap();
+
+    rv.set(v8::String::new(scope, &reading_data).unwrap().into());
 }
