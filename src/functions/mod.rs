@@ -1,4 +1,4 @@
 pub mod console;
-pub mod lizlib;
+pub mod lizzard;
 pub mod process;
 pub mod require;
