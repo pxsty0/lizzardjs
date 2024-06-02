@@ -29,6 +29,12 @@ pub fn init_fs(scope: &mut ContextScope<HandleScope>, lizzard: v8::Local<v8::Obj
         fs_write_file.into(),
     );
 
+    let fs_mkdir = v8::FunctionTemplate::new(scope, mkdir_cb);
+    fs.set(
+        v8::String::new(scope, "mkdir").unwrap().into(),
+        fs_mkdir.into(),
+    );
+
     let fs_key = v8::String::new(scope, "fs").unwrap();
     let fs_obj = fs.new_instance(scope).unwrap();
 
@@ -163,6 +169,42 @@ fn append_file_cb(
     let write_status = fs::write(file_path, reading_data);
 
     if let Err(e) = write_status {
+        let err_msg = v8::String::new(scope, &e.to_string()).unwrap().into();
+        let exception = v8::Exception::error(scope, err_msg);
+        scope.throw_exception(exception);
+        return;
+    } else {
+        rv.set_bool(true);
+    }
+}
+
+fn mkdir_cb(
+    scope: &mut v8::HandleScope,
+    args: v8::FunctionCallbackArguments,
+    mut rv: v8::ReturnValue,
+) {
+    if args.length() < 2 {
+        let err_msg = v8::String::new(scope, "missing parameters").unwrap().into();
+        let exception = v8::Exception::reference_error(scope, err_msg);
+        scope.throw_exception(exception);
+        return;
+    }
+    let file_path = args
+        .get(0)
+        .to_string(scope)
+        .unwrap()
+        .to_rust_string_lossy(scope);
+    let folder_name = args
+        .get(1)
+        .to_string(scope)
+        .unwrap()
+        .to_rust_string_lossy(scope);
+
+    let new_path = Path::new(&file_path).join(folder_name);
+
+    let status = fs::create_dir(new_path);
+
+    if let Err(e) = status {
         let err_msg = v8::String::new(scope, &e.to_string()).unwrap().into();
         let exception = v8::Exception::error(scope, err_msg);
         scope.throw_exception(exception);
