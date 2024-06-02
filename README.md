@@ -1,7 +1,6 @@
 
 # lizzardjs
-JavaScript runtimer built with Rust
-
+A JavaScript Runtimer developed with Rust using the Google V8 Engine
 
 
 ## Authors
