@@ -2,6 +2,8 @@ use std::{fs, path::Path};
 
 use v8::{self, ContextScope, HandleScope};
 
+use crate::functions::error::{other_error, reference_error};
+
 pub fn init_fs(scope: &mut ContextScope<HandleScope>, lizzard: v8::Local<v8::Object>) {
     let fs = v8::ObjectTemplate::new(scope);
 
@@ -47,9 +49,7 @@ fn exists_cb(
     mut rv: v8::ReturnValue,
 ) {
     if args.length() == 0 {
-        let err_msg = v8::String::new(scope, "invalid file path").unwrap().into();
-        let exception = v8::Exception::reference_error(scope, err_msg);
-        scope.throw_exception(exception);
+        reference_error(scope, "invalid file path");
         return;
     }
     let exists = Path::new(
@@ -75,9 +75,7 @@ fn read_file_cb(
         .unwrap()
         .to_rust_string_lossy(scope);
     if args.length() == 0 || Path::new(&file_path).exists() == false {
-        let err_msg = v8::String::new(scope, "invalid file path").unwrap().into();
-        let exception = v8::Exception::reference_error(scope, err_msg);
-        scope.throw_exception(exception);
+        reference_error(scope, "invalid file path");
         return;
     }
     let status = fs::read_to_string(&file_path);
@@ -88,9 +86,7 @@ fn read_file_cb(
             rv.set(v8::String::new(scope, &reading_data).unwrap().into());
         }
         Err(e) => {
-            let err_msg = v8::String::new(scope, &e.to_string()).unwrap().into();
-            let exception = v8::Exception::error(scope, err_msg);
-            scope.throw_exception(exception);
+            other_error(scope, &e.to_string());
             return;
         }
     }
@@ -102,9 +98,7 @@ fn write_file_cb(
     mut rv: v8::ReturnValue,
 ) {
     if args.length() < 2 {
-        let err_msg = v8::String::new(scope, "missing parameters").unwrap().into();
-        let exception = v8::Exception::reference_error(scope, err_msg);
-        scope.throw_exception(exception);
+        reference_error(scope, "missing parameters");
         return;
     }
     let path = args
@@ -121,9 +115,7 @@ fn write_file_cb(
     let status = fs::write(path, content);
 
     if let Err(e) = status {
-        let err_msg = v8::String::new(scope, &e.to_string()).unwrap().into();
-        let exception = v8::Exception::error(scope, err_msg);
-        scope.throw_exception(exception);
+        other_error(scope, &e.to_string());
         return;
     } else {
         rv.set_bool(true);
@@ -136,9 +128,7 @@ fn append_file_cb(
     mut rv: v8::ReturnValue,
 ) {
     if args.length() < 2 {
-        let err_msg = v8::String::new(scope, "missing parameters").unwrap().into();
-        let exception = v8::Exception::reference_error(scope, err_msg);
-        scope.throw_exception(exception);
+        reference_error(scope, "missing parameters");
         return;
     }
     let file_path = args
@@ -169,9 +159,7 @@ fn append_file_cb(
     let write_status = fs::write(file_path, reading_data);
 
     if let Err(e) = write_status {
-        let err_msg = v8::String::new(scope, &e.to_string()).unwrap().into();
-        let exception = v8::Exception::error(scope, err_msg);
-        scope.throw_exception(exception);
+        other_error(scope, &e.to_string());
         return;
     } else {
         rv.set_bool(true);
@@ -184,9 +172,7 @@ fn mkdir_cb(
     mut rv: v8::ReturnValue,
 ) {
     if args.length() < 2 {
-        let err_msg = v8::String::new(scope, "missing parameters").unwrap().into();
-        let exception = v8::Exception::reference_error(scope, err_msg);
-        scope.throw_exception(exception);
+        reference_error(scope, "missing parameters");
         return;
     }
     let file_path = args
@@ -205,9 +191,7 @@ fn mkdir_cb(
     let status = fs::create_dir(new_path);
 
     if let Err(e) = status {
-        let err_msg = v8::String::new(scope, &e.to_string()).unwrap().into();
-        let exception = v8::Exception::error(scope, err_msg);
-        scope.throw_exception(exception);
+        other_error(scope, &e.to_string());
         return;
     } else {
         rv.set_bool(true);

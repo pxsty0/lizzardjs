@@ -2,6 +2,8 @@ use std::{fs, path::Path};
 
 use v8::{self, ContextScope, HandleScope};
 
+use super::error::reference_error;
+
 pub fn init_require(scope: &mut ContextScope<HandleScope>, global: v8::Local<v8::Object>) {
     let require = v8::FunctionTemplate::new(scope, require_callback);
 
@@ -23,11 +25,7 @@ fn require_callback(
         .to_rust_string_lossy(scope);
 
     if args.length() == 0 || Path::new(file_path).exists() == false {
-        let err_msg = v8::String::new(scope, "invalid require file path")
-            .unwrap()
-            .into();
-        let exception = v8::Exception::reference_error(scope, err_msg);
-        scope.throw_exception(exception);
+        reference_error(scope, "invalid require file path");
         return;
     }
 

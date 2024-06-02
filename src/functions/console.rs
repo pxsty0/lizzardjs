@@ -3,6 +3,8 @@ use lazy_static::lazy_static;
 use std::{collections::HashMap, sync::Mutex};
 use v8::{self, ContextScope, HandleScope};
 
+use super::error::reference_error;
+
 lazy_static! {
     static ref TIMES: Mutex<HashMap<String, i64>> = {
         let map = HashMap::new();
@@ -88,11 +90,7 @@ fn time_end_callback(
         let result = (timestamp - value) * 1000;
         println!("{} counter has ended : {} ms", key, result);
     } else {
-        let err_msg = v8::String::new(scope, "invalid timer label")
-            .unwrap()
-            .into();
-        let exception = v8::Exception::reference_error(scope, err_msg);
-        scope.throw_exception(exception);
+        reference_error(scope, "invalid timer label");
         return;
     }
 }

@@ -1,4 +1,4 @@
-pub fn _error(scope: &mut v8::HandleScope, message: String) {
+pub fn other_error(scope: &mut v8::HandleScope, message: &str) {
     let err_msg = v8::String::new(scope, &format!("{}", message))
         .unwrap()
         .into();
