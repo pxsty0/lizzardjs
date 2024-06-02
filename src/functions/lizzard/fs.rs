@@ -17,6 +17,12 @@ pub fn init_fs(scope: &mut ContextScope<HandleScope>, lizzard: v8::Local<v8::Obj
         fs_read_file.into(),
     );
 
+    let fs_append_file = v8::FunctionTemplate::new(scope, append_file_cb);
+    fs.set(
+        v8::String::new(scope, "appendFile").unwrap().into(),
+        fs_append_file.into(),
+    );
+
     let fs_write_file = v8::FunctionTemplate::new(scope, write_file_cb);
     fs.set(
         v8::String::new(scope, "writeFile").unwrap().into(),
@@ -109,6 +115,54 @@ fn write_file_cb(
     let status = fs::write(path, content);
 
     if let Err(e) = status {
+        let err_msg = v8::String::new(scope, &e.to_string()).unwrap().into();
+        let exception = v8::Exception::error(scope, err_msg);
+        scope.throw_exception(exception);
+        return;
+    } else {
+        rv.set_bool(true);
+    }
+}
+
+fn append_file_cb(
+    scope: &mut v8::HandleScope,
+    args: v8::FunctionCallbackArguments,
+    mut rv: v8::ReturnValue,
+) {
+    if args.length() < 2 {
+        let err_msg = v8::String::new(scope, "missing parameters").unwrap().into();
+        let exception = v8::Exception::reference_error(scope, err_msg);
+        scope.throw_exception(exception);
+        return;
+    }
+    let file_path = args
+        .get(0)
+        .to_string(scope)
+        .unwrap()
+        .to_rust_string_lossy(scope);
+    let content = args
+        .get(1)
+        .to_string(scope)
+        .unwrap()
+        .to_rust_string_lossy(scope);
+
+    let read_status = fs::read_to_string(&file_path);
+
+    let mut reading_data = String::from("");
+
+    match read_status {
+        Ok(reading_str) => {
+            reading_data.push_str(&reading_str);
+        }
+        Err(..) => {
+            reading_data.push_str("");
+        }
+    }
+    reading_data.push_str(&content);
+
+    let write_status = fs::write(file_path, reading_data);
+
+    if let Err(e) = write_status {
         let err_msg = v8::String::new(scope, &e.to_string()).unwrap().into();
         let exception = v8::Exception::error(scope, err_msg);
         scope.throw_exception(exception);
