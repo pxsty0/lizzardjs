@@ -21,7 +21,6 @@ pub fn init_env(scope: &mut ContextScope<HandleScope>, process: v8::Local<v8::Ob
             }
         }
         Err(..) => {
-            println!("env yoktu es geçtim");
             return;
         }
     }
