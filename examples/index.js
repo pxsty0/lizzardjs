@@ -1,16 +1,3 @@
-# lizzardjs
-
-A JavaScript Runtimer developed with Rust using the Google V8 Engine
-
-## Authors
-
-- [@pxsty0](https://www.github.com/pxsty0) main and sole developer
-
-## Usage and Example
-
---> index.js
-
-```javascript
 console.log("developed by mustafa 'pxsty' kok"); // prints the entered arguments on a new line in order
 console.time(); // starts the timer optional parameter can be entered uses the “default” parameter as standard
 console.timeEnd(); // terminates the timer and prints the elapsed time
@@ -38,18 +25,3 @@ console.log(lizzard.fs.appendFile("./lizzard.txt", "\npxsty")); // Adds “pxsty
 console.log(lizzard.fs.exists("./lizzard.txt")); // Checks for the existence of the file “lizzard.txt”
 console.log(lizzard.fs.readFile("./lizzard.txt")); // Reads the file “lizzard.txt”
 console.log(lizzard.fs.mkdir("./", "lizzard")); // Creates the “lizzard” folder in the path “./”
-```
-
---> printInfo.js
-
-```javascript
-() => {
-  return "developed by mustafa 'pxsty' kok";
-};
-```
-
---> .env
-
-```cs
-developer=mustafa pxsty kok
-```
