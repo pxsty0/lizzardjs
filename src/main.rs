@@ -61,13 +61,19 @@ fn main() {
                 if result.is_none() {
                     let stack_trace = try_catch.stack_trace().unwrap();
                     let stack_trace_string = stack_trace.to_string(try_catch).unwrap();
-                    println!("{}", stack_trace_string.to_rust_string_lossy(try_catch));
+                    println!(
+                        "{}\n\nLizzardJS v.0.1.0",
+                        stack_trace_string.to_rust_string_lossy(try_catch)
+                    );
                 }
             }
             None => {
                 let stack_trace = try_catch.stack_trace().unwrap();
                 let stack_trace_string = stack_trace.to_string(try_catch).unwrap();
-                println!("{}", stack_trace_string.to_rust_string_lossy(try_catch));
+                println!(
+                    "{}\n\nLizzardJS v.0.1.0",
+                    stack_trace_string.to_rust_string_lossy(try_catch)
+                );
             }
         }
     }
