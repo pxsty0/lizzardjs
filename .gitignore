@@ -1,2 +1,5 @@
 /target
 /temp
+/index.js
+/start.bat
+/.env

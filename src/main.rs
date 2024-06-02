@@ -6,6 +6,7 @@ use functions::process;
 use functions::require;
 
 use std::{env, fs, path::Path};
+
 fn main() {
     let args: Vec<String> = env::args().collect();
 
