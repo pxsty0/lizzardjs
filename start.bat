@@ -1,1 +1,0 @@
-npx nodemon --ext ".rs,.js" --exec "cargo run ./index.js"
