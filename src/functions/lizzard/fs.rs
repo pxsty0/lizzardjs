@@ -82,7 +82,6 @@ fn read_file_cb(
 
     match status {
         Ok(reading_data) => {
-            println!("Dosya başarıyla okundu");
             rv.set(v8::String::new(scope, &reading_data).unwrap().into());
         }
         Err(e) => {
