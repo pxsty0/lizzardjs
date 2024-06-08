@@ -1,5 +1,6 @@
 use v8::{self, ContextScope, HandleScope};
 
+mod fetch;
 mod fs;
 
 pub fn init_lizzard(scope: &mut ContextScope<HandleScope>, global: v8::Local<v8::Object>) {
@@ -9,6 +10,7 @@ pub fn init_lizzard(scope: &mut ContextScope<HandleScope>, global: v8::Local<v8:
     let lizzard_obj = lizzard.new_instance(scope).unwrap();
 
     fs::init_fs(scope, lizzard_obj);
+    fetch::init_fetch(scope, lizzard_obj);
 
     global.set(scope, lizzard_key.into(), lizzard_obj.into());
 }
