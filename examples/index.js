@@ -25,3 +25,17 @@ console.log(lizzard.fs.appendFile("./lizzard.txt", "\npxsty")); // Adds “pxsty
 console.log(lizzard.fs.exists("./lizzard.txt")); // Checks for the existence of the file “lizzard.txt”
 console.log(lizzard.fs.readFile("./lizzard.txt")); // Reads the file “lizzard.txt”
 console.log(lizzard.fs.mkdir("./", "lizzard")); // Creates the “lizzard” folder in the path “./”
+
+lizzard
+  .fetch("https://httpbin.org/post", {
+    method: "POST", // or GET,HEAD,POST,PUT,DELETE AND PATCH
+    body: JSON.stringify({ run_with: "LizzardJS" }),
+  })
+  .then((data) => {
+    console.log("reject output returned");
+    console.log(`statusCode : ${data.statusCode}`);
+    console.log(`response : ${data.response}`);
+  })
+  .catch((err) => {
+    console.log(`reject output returned : ${err}`);
+  });
