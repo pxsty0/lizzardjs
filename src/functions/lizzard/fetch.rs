@@ -1,4 +1,5 @@
 use crate::functions::error::reference_error;
+use reqwest::header::{HeaderMap, HeaderValue};
 use reqwest::{blocking::Client, Method};
 
 use v8::{self, ContextScope, HandleScope};
@@ -57,8 +58,16 @@ fn fetch(
 
     let client = Client::new();
 
+    let mut header = HeaderMap::new();
+
+    header.insert(
+        "User-Agent",
+        HeaderValue::from_str("LizzardJSFetchClient").unwrap(),
+    );
+
     let response = client
         .request(method.parse::<Method>().unwrap(), &url)
+        .headers(header)
         .body(body)
         .send();
 
