@@ -4,7 +4,7 @@ A JavaScript Runtimer developed with Rust using the Google V8 Engine
 
 ## Authors
 
-- [@pxsty0](https://www.github.com/pxsty0) main and sole developer
+- [@pxsty0](https://www.github.com/pxsty0) main developer
 
 ## Usage and Example
 
